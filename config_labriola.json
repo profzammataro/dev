@@ -1,0 +1,34 @@
+{
+  "nome_scuola": "Liceo Labriola",
+  "nome_app": "Labryorario",
+  "sottotitolo": "Orario Scolastico 2024/25",
+  "colore_primario": "#2196F3",
+  "colore_secondario": "#21CBF3",
+  "logo": "logo.png",
+  "num_ore": 6,
+  "modello": "DADA",
+  "comunicazioni": true,
+  "campane": [
+    { "label": "1ª ora", "inizio": "8:10", "fine": "9:10",  "inizio_min": 490, "fine_min": 550 },
+    { "label": "2ª ora", "inizio": "9:10", "fine": "10:10", "inizio_min": 550, "fine_min": 610 },
+    { "label": "3ª ora", "inizio": "10:10","fine": "11:00", "inizio_min": 610, "fine_min": 660 },
+    { "label": "4ª ora", "inizio": "11:20","fine": "12:10", "inizio_min": 680, "fine_min": 730 },
+    { "label": "5ª ora", "inizio": "12:10","fine": "13:05", "inizio_min": 730, "fine_min": 785 },
+    { "label": "6ª ora", "inizio": "13:05","fine": "14:00", "inizio_min": 785, "fine_min": 840 }
+  ],
+  "ingressi_uscite_map": {
+    "8.10": 0, "8:10": 0,
+    "9.10": 1, "9:10": 1,
+    "10.10": 2, "10:10": 2,
+    "11.10": 3, "11:10": 3, "11.20": 3, "11:20": 3,
+    "12.10": 4, "12:10": 4,
+    "13.05": 5, "13:05": 5
+  },
+  "social": {
+    "registro":  "https://registro.axioscloud.it/Pages/SD/SD_Login.aspx?Customer_ID=80222130587",
+    "displayer": "https://profzammataro.github.io/displayer/display",
+    "whatsapp":  "https://whatsapp.com/channel/0029VauwvZDHFxP4PBaeij2z",
+    "instagram": "https://www.instagram.com/labriola_channel",
+    "facebook":  "https://www.facebook.com/share/17uSffUzK6/"
+  }
+}

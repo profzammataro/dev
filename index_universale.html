@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="manifest.json">
+  <meta id="meta-theme" name="theme-color" content="#2196F3">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta id="meta-app-title" name="apple-mobile-web-app-title" content="Orario">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <title id="page-title">Orario Scolastico</title>
+  <style>
+    /* ── VARIABILI (sovrascritte da config.json via JS) ── */
+    :root {
+      --c1: #2196F3;
+      --c2: #21CBF3;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: rgba(255,255,255,0.95);
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    }
+
+    /* ── HEADER ── */
+    .header {
+      background: linear-gradient(135deg, var(--c1), var(--c2));
+      color: white;
+      padding: 30px;
+      text-align: center;
+      border-radius: 20px 20px 0 0;
+      position: relative;
+    }
+    .header-logo {
+      width: 64px; height: 64px;
+      border-radius: 14px;
+      object-fit: contain;
+      margin-bottom: 10px;
+      display: none;
+      background: white;
+      padding: 4px;
+    }
+    .header h1 { font-size: 28px; font-weight: 700; margin: 0; }
+    .header p  { font-size: 14px; opacity: .85; margin: 4px 0 0; }
+
+    /* ── SOCIAL BUTTONS ── */
+    .social-buttons {
+      display: flex; flex-wrap: wrap;
+      justify-content: center; gap: 10px;
+      margin-top: 16px;
+    }
+    .social-btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 9px 20px; border-radius: 50px;
+      font-size: 14px; font-weight: 700;
+      text-decoration: none; color: white;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.18);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .social-btn:hover { transform: scale(1.06); box-shadow: 0 6px 20px rgba(0,0,0,.25); }
+    .registro-btn  { background: #e53935; }
+    .displayer-btn { background: #5c6bc0; }
+    .whatsapp-btn  { background: #25D366; }
+    .instagram-btn { background: linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); }
+    .facebook-btn  { background: #1877F2; }
+
+    #installBtn {
+      display: none; margin-top: 14px; padding: 10px 24px;
+      background: white; color: var(--c1); border: none;
+      border-radius: 50px; font-size: 15px; font-weight: 700;
+      cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,.15);
+      transition: transform .2s, box-shadow .2s;
+    }
+    #installBtn:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(0,0,0,.2); }
+
+    /* ── MODE SELECTOR ── */
+    .mode-selector {
+      text-align: center;
+      background: rgba(247,249,252,0.8);
+      padding: 20px;
+      border-bottom: 2px solid #e1e8ed;
+    }
+    .mode-buttons {
+      display: flex; gap: 6px;
+      background: white; padding: 5px;
+      border-radius: 50px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      width: 100%; max-width: 420px;
+      margin: 0 auto;
+    }
+    .mode-btn {
+      flex: 1; padding: 12px 8px;
+      border: none; border-radius: 50px;
+      background: transparent; color: #666;
+      font-size: 15px; cursor: pointer;
+      transition: all .3s; white-space: nowrap;
+      overflow: hidden; text-overflow: ellipsis;
+    }
+    .mode-btn.active {
+      background: linear-gradient(135deg, var(--c1), var(--c2));
+      color: white;
+      box-shadow: 0 4px 15px rgba(33,150,243,0.3);
+    }
+
+    /* ── SEARCH ── */
+    .search-section {
+      text-align: center;
+      background: rgba(247,249,252,0.8);
+      padding: 30px;
+    }
+    .search-container {
+      display: flex; justify-content: center;
+      align-items: center; gap: 10px;
+      width: 100%; max-width: 500px;
+      margin: 0 auto; position: relative;
+    }
+    .search-input {
+      flex: 1; padding: 15px 20px;
+      border: 2px solid #e1e8ed; border-radius: 50px;
+      font-size: 16px;
+      box-shadow: 0 4px 15px rgba(0,0,0,.1);
+      transition: all .3s; outline: none;
+    }
+    .search-input:focus {
+      border-color: var(--c1);
+      box-shadow: 0 8px 25px rgba(33,150,243,0.2);
+    }
+    .search-btn {
+      background: linear-gradient(135deg, var(--c1), var(--c2));
+      color: white; border: none; border-radius: 50%;
+      width: 48px; height: 48px; cursor: pointer;
+      font-size: 18px; display: flex;
+      align-items: center; justify-content: center;
+      box-shadow: 0 4px 15px rgba(33,150,243,0.3);
+      transition: transform .2s;
+    }
+    .search-btn:hover { transform: scale(1.05); }
+
+    #suggestionsList {
+      position: absolute; top: 110%; left: 0; right: 0;
+      background: white; border: 1px solid #ddd;
+      border-radius: 10px; max-height: 200px;
+      overflow-y: auto; list-style: none;
+      margin: 0; padding: 0;
+      box-shadow: 0 4px 15px rgba(0,0,0,.1);
+      display: none; z-index: 10;
+    }
+    #suggestionsList li { padding: 10px 15px; cursor: pointer; }
+    #suggestionsList li:hover { background: #f0f7ff; }
+
+    /* ── FIND SECTIONS ── */
+    .find-section {
+      display: none; text-align: center; padding: 25px;
+      background: rgba(247,249,252,0.8);
+      border-top: 2px solid #e1e8ed;
+    }
+    .find-section h3 { margin-bottom: 15px; color: #333; }
+    .find-controls {
+      display: flex; flex-wrap: wrap;
+      justify-content: center; align-items: center; gap: 10px;
+    }
+    .find-select {
+      max-width: 160px; border-radius: 10px; padding: 10px;
+      border: 2px solid #e1e8ed; font-size: 14px; outline: none;
+    }
+    .find-select:focus { border-color: var(--c1); }
+    .find-btn {
+      display: inline-flex; align-items: center;
+      justify-content: center; padding: 12px 28px;
+      border: none; border-radius: 50px; font-size: 16px;
+      font-weight: 600; cursor: pointer; color: white;
+      transition: all .3s; box-shadow: 0 4px 15px rgba(0,0,0,.15);
+    }
+    .find-btn:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(0,0,0,.2); }
+    .find-btn.green { background: linear-gradient(135deg,#4CAF50,#81C784); }
+    .find-btn.blue  { background: linear-gradient(135deg, var(--c1), var(--c2)); }
+    .find-result { margin-top: 20px; }
+
+    /* ── SCHEDULE ── */
+    .schedule-container { display: none; padding: 30px; }
+    .table-wrapper { width: 100%; overflow-x: auto; }
+    .info-box {
+      text-align: center; margin-bottom: 30px; padding: 20px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white; border-radius: 15px;
+    }
+    .schedule-table {
+      width: 100%; border-collapse: collapse; background: white;
+      box-shadow: 0 10px 25px rgba(0,0,0,.1);
+      border-radius: 15px; overflow: hidden; min-width: 700px;
+    }
+    .schedule-table th {
+      background: linear-gradient(135deg, var(--c1), var(--c2));
+      color: white; padding: 18px 10px;
+      text-align: center; font-size: 15px; font-weight: 600;
+    }
+    .schedule-table td {
+      border: 1px solid #e8f4f8; text-align: center;
+      padding: 14px 8px; font-size: 13px; background: white;
+    }
+    .schedule-table th:first-child,
+    .schedule-table td:first-child {
+      background: linear-gradient(135deg, #FF6B9D, #FFA07A);
+      color: white; font-weight: 600; font-size: 14px;
+    }
+    .lesson-info {
+      display: flex; flex-direction: column;
+      justify-content: center; gap: 3px;
+      padding: 8px 12px; border-radius: 8px;
+      background: linear-gradient(135deg,#E3F2FD,#F0F7FF);
+      line-height: 1.6; min-height: 45px;
+    }
+    .subject { font-weight: 700; color: #1976D2; font-size: 13px; }
+    .teacher { font-weight: 700; color: #E91E63; font-size: 11px; }
+    .room    { font-weight: 700; color: #4CAF50; font-size: 11px; }
+
+    /* Celle modificate */
+    .modified-cell   { background: linear-gradient(135deg,#fff3e0,#ffe0b2) !important; border: 2px solid #FF9800 !important; border-radius: 8px; }
+    .no-school-cell  { background: linear-gradient(135deg,#ffebee,#ffcdd2) !important; border: 2px solid #e53935 !important; border-radius: 8px; }
+    .absent-cell     { background: linear-gradient(135deg,#fce4ec,#ffcdd2) !important; border: 2px solid #e53935 !important; border-radius: 8px; }
+    .substitute-cell { background: linear-gradient(135deg,#fff3e0,#ffe0b2) !important; border: 2px solid #FF9800 !important; border-radius: 8px; }
+    .modified-badge, .no-school-badge, .absent-badge, .substitute-badge {
+      display: block; font-size: 9px; font-weight: 700;
+      margin-bottom: 3px; text-transform: uppercase; letter-spacing: .5px;
+    }
+    .modified-badge, .substitute-badge { color: #e65100; }
+    .no-school-badge, .absent-badge { color: #b71c1c; }
+
+    /* ── COMUNICAZIONI ── */
+    .comunicazioni-section {
+      padding: 25px 30px;
+      background: #fffbf0;
+      border-top: 2px solid #ffe082;
+      display: none;
+    }
+    .comunicazioni-section h2 { text-align: center; color: #e65100; margin-bottom: 18px; font-size: 20px; }
+    .com-data { text-align: center; font-size: 18px; color: #e65100; margin-bottom: 20px; }
+    .com-table-wrapper {
+      width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch;
+      margin-bottom: 20px; border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,.08);
+    }
+    .com-table {
+      width: 100%; min-width: 400px; border-collapse: collapse;
+      background: white; border-radius: 12px; overflow: hidden;
+    }
+    .com-table caption { font-weight: 700; font-size: 14px; padding: 10px; text-align: left; color: #555; }
+    .com-table th {
+      background: linear-gradient(135deg,#FF9800,#FFB74D);
+      color: white; padding: 10px 12px; font-size: 13px; text-align: center;
+    }
+    .com-table td {
+      padding: 10px 12px; font-size: 13px; text-align: center;
+      border-bottom: 1px solid #fff3e0; background: #fffde7;
+    }
+    .com-table tr:last-child td { border-bottom: none; }
+
+    /* ── INSTALL BANNERS ── */
+    .android-banner, .ios-banner {
+      display: none; position: fixed; bottom: 24px;
+      left: 50%; transform: translateX(-50%);
+      width: calc(100% - 40px); max-width: 420px;
+      background: white; border-radius: 16px; padding: 16px 18px;
+      box-shadow: 0 8px 30px rgba(0,0,0,.25);
+      z-index: 9999; flex-direction: column; gap: 12px;
+      border: 1px solid #e5e7eb;
+    }
+    .android-banner.visible, .ios-banner.visible { display: flex; }
+    .android-banner-header, .ios-banner-header { display: flex; align-items: center; gap: 12px; }
+    .android-banner-icon, .ios-banner-icon { font-size: 28px; flex-shrink: 0; }
+    .android-banner-title, .ios-banner-title { font-size: 15px; font-weight: 700; color: #333; flex: 1; }
+    .android-banner-close, .ios-banner-close { background: none; border: none; font-size: 22px; color: #aaa; cursor: pointer; flex-shrink: 0; }
+    .android-banner-desc { font-size: 13px; color: #666; line-height: 1.5; }
+    .android-banner-actions { display: flex; gap: 10px; justify-content: flex-end; }
+    .android-banner-btn { padding: 9px 20px; border-radius: 50px; border: none; font-size: 14px; font-weight: 700; cursor: pointer; transition: transform .2s; }
+    .android-banner-btn:hover { transform: scale(1.04); }
+    .android-banner-btn.primary { background: linear-gradient(135deg, var(--c1), var(--c2)); color: white; }
+    .android-banner-btn.secondary { background: #f0f0f0; color: #666; }
+    .ios-banner-steps { display: flex; flex-direction: column; gap: 8px; }
+    .ios-banner-step { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #555; line-height: 1.4; }
+    .ios-banner-step-num { background: var(--c1); color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 480px) {
+      body { padding: 8px; }
+      .comunicazioni-section { padding: 20px 10px; }
+      .com-table { min-width: unset; }
+      .com-table th, .com-table td { padding: 7px 5px; font-size: 11px; }
+    }
+    @media (max-height: 500px) and (orientation: landscape) {
+      body { padding: 8px; }
+      .header { padding: 10px 20px; }
+      .header h1 { font-size: 18px; }
+      .header p { display: none; }
+      .mode-selector { padding: 8px; }
+      .search-section { padding: 12px; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <img id="headerLogo" class="header-logo" src="" alt="Logo scuola">
+    <h1 id="headerTitle">Orario Scolastico</h1>
+    <p id="headerSubtitle"></p>
+    <div class="social-buttons" id="socialButtons"></div>
+    <button id="installBtn">📲 Installa app</button>
+  </div>
+
+  <!-- Mode selector -->
+  <div class="mode-selector">
+    <div class="mode-buttons">
+      <button class="mode-btn active" data-mode="teacher">👨‍🏫 Docenti</button>
+      <button class="mode-btn" data-mode="class">🎓 Classi</button>
+      <button class="mode-btn" data-mode="room">🏫 Aule</button>
+    </div>
+  </div>
+
+  <!-- Search -->
+  <div class="search-section">
+    <div class="search-container">
+      <input type="text" id="searchInput" class="search-input" placeholder="Inserisci il cognome del docente...">
+      <button id="searchBtn" class="search-btn">🔍</button>
+      <ul id="suggestionsList"></ul>
+    </div>
+
+    <!-- Trova Docente Disponibile -->
+    <div id="findAvailTeacherSection" class="find-section">
+      <h3>🔍 Trova Docente Disponibile</h3>
+      <div class="find-controls">
+        <select id="daySelectTeacher" class="find-select">
+          <option value="">Giorno</option>
+          <option value="1">Lunedì</option><option value="2">Martedì</option>
+          <option value="3">Mercoledì</option><option value="4">Giovedì</option>
+          <option value="5">Venerdì</option>
+        </select>
+        <select id="hourSelectTeacher" class="find-select" id="hourSelectTeacher"></select>
+        <button id="searchAvailTeacherBtn" class="find-btn green">🔍 Trova</button>
+        <button id="findAvailTeacherNowBtn" class="find-btn blue">⏰ Disponibili Ora</button>
+      </div>
+      <div id="availTeacherResult" class="find-result"></div>
+    </div>
+
+    <!-- Trova Aula Vuota -->
+    <div id="findFreeRoomSection" class="find-section">
+      <h3>🔍 Trova Aula Vuota</h3>
+      <div class="find-controls">
+        <select id="daySelect" class="find-select">
+          <option value="">Giorno</option>
+          <option value="1">Lunedì</option><option value="2">Martedì</option>
+          <option value="3">Mercoledì</option><option value="4">Giovedì</option>
+          <option value="5">Venerdì</option>
+        </select>
+        <select id="hourSelect" class="find-select"></select>
+        <button id="searchFreeRoomBtn" class="find-btn green">🔍 Trova</button>
+        <button id="findNowBtn" class="find-btn blue">⏰ Aule Vuote Ora</button>
+      </div>
+      <div id="freeRoomsResult" class="find-result"></div>
+    </div>
+  </div>
+
+  <!-- Schedule -->
+  <div id="scheduleContainer" class="schedule-container">
+    <div id="infoBox" class="info-box"></div>
+    <div class="table-wrapper"><div id="scheduleContent"></div></div>
+  </div>
+
+  <!-- Comunicazioni -->
+  <div id="comunicazioniSection" class="comunicazioni-section">
+    <h2>📢 Comunicazioni per il giorno <p class="com-data" id="comData"></p></h2>
+    <div class="com-table-wrapper">
+      <table class="com-table" id="comIngressiTable">
+        <caption>🚪 Ingressi / Uscite</caption>
+        <thead><tr><th>Classe</th><th>Ingresso</th><th>Uscita</th><th>Sostituzione</th><th>Aula</th></tr></thead>
+        <tbody id="comIngressiBody"></tbody>
+      </table>
+    </div>
+    <div class="com-table-wrapper">
+      <table class="com-table" id="comSostituzioniTable">
+        <caption>🔄 Sostituzioni</caption>
+        <thead><tr><th>Classe</th><th>Ora</th><th>Aula</th><th>Docente</th></tr></thead>
+        <tbody id="comSostituzioniBody"></tbody>
+      </table>
+    </div>
+    <div class="com-table-wrapper">
+      <table class="com-table" id="comCambiTable">
+        <caption>🏫 Cambi Aula</caption>
+        <thead><tr><th>Ora</th><th>Classe</th><th>Aula</th><th>Docente</th></tr></thead>
+        <tbody id="comCambiBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<!-- Android banner -->
+<div class="android-banner" id="androidBanner">
+  <div class="android-banner-header">
+    <div class="android-banner-icon">📅</div>
+    <div class="android-banner-title" id="androidBannerTitle">Installa l'app!</div>
+    <button class="android-banner-close" id="androidBannerClose">×</button>
+  </div>
+  <div class="android-banner-desc">Aggiungi l'app alla schermata home per accedere all'orario in un tap, anche offline!</div>
+  <div class="android-banner-actions">
+    <button class="android-banner-btn secondary" id="androidBannerDismiss">Non ora</button>
+    <button class="android-banner-btn primary" id="androidBannerInstall">📲 Installa</button>
+  </div>
+</div>
+
+<!-- iOS banner -->
+<div class="ios-banner" id="iosBanner">
+  <div class="ios-banner-header">
+    <div class="ios-banner-icon">📅</div>
+    <div class="ios-banner-title" id="iosBannerTitle">Installa l'app sul tuo iPhone!</div>
+    <button class="ios-banner-close" id="iosBannerClose">×</button>
+  </div>
+  <div class="ios-banner-steps">
+    <div class="ios-banner-step"><div class="ios-banner-step-num">1</div><div>Tocca l'icona <b>⬆️ Condividi</b> del browser Safari</div></div>
+    <div class="ios-banner-step"><div class="ios-banner-step-num">2</div><div>Scorri e seleziona <b>"Aggiungi a schermata Home"</b></div></div>
+    <div class="ios-banner-step"><div class="ios-banner-step-num">3</div><div>Tocca <b>"Aggiungi"</b> in alto a destra</div></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+//  STATO GLOBALE
+// ═══════════════════════════════════════════════
+let cfg = {};
+let teachersData = {}, classesData = {}, roomsData = {}, comunicazioniData = {};
+let currentMode = "teacher";
+
+// ═══════════════════════════════════════════════
+//  BOOTSTRAP: carica config poi dati
+// ═══════════════════════════════════════════════
+async function bootstrap() {
+  try {
+    const r = await fetch('./config.json');
+    cfg = await r.json();
+  } catch(e) {
+    console.warn("config.json non trovato, uso valori default");
+    cfg = { nome_scuola:"Orario Scolastico", colore_primario:"#2196F3", colore_secondario:"#21CBF3", num_ore:6, comunicazioni:true, social:{}, campane:[] };
+  }
+  applyConfig();
+  await loadData();
+  setupUI();
+}
+
+// ═══════════════════════════════════════════════
+//  APPLICA CONFIG
+// ═══════════════════════════════════════════════
+function applyConfig() {
+  const c1 = cfg.colore_primario || "#2196F3";
+  const c2 = cfg.colore_secondario || "#21CBF3";
+  document.documentElement.style.setProperty('--c1', c1);
+  document.documentElement.style.setProperty('--c2', c2);
+
+  // Meta tags
+  document.getElementById('meta-theme').content = c1;
+  const nomeApp = cfg.nome_app || cfg.nome_scuola || "Orario";
+  document.getElementById('meta-app-title').content = nomeApp;
+  document.getElementById('page-title').textContent = nomeApp;
+
+  // Header
+  document.getElementById('headerTitle').textContent = cfg.nome_scuola || "Orario Scolastico";
+  if (cfg.sottotitolo) document.getElementById('headerSubtitle').textContent = cfg.sottotitolo;
+
+  // Logo
+  if (cfg.logo) {
+    const img = document.getElementById('headerLogo');
+    img.src = cfg.logo;
+    img.style.display = 'block';
+    img.onerror = () => img.style.display = 'none';
+  }
+
+  // Social buttons
+  const sb = document.getElementById('socialButtons');
+  sb.innerHTML = '';
+  const social = cfg.social || {};
+  const defs = [
+    { key:'registro',  cls:'registro-btn',  label:'Registro',  icon:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zm-7-.25a.75.75 0 110 1.5.75.75 0 010-1.5zM17 17H7v-2h10v2zm0-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>' },
+    { key:'displayer', cls:'displayer-btn', label:'Displayer', icon:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M20 3H4a2 2 0 00-2 2v11a2 2 0 002 2h6v2H7v2h10v-2h-3v-2h6a2 2 0 002-2V5a2 2 0 00-2-2zm0 13H4V5h16v11z"/></svg>' },
+    { key:'whatsapp',  cls:'whatsapp-btn',  label:'WhatsApp', icon:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.558 4.121 1.533 5.848L.054 23.25a.75.75 0 00.916.916l5.402-1.479A11.953 11.953 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.75a9.73 9.73 0 01-4.964-1.357l-.356-.211-3.676 1.005 1.005-3.676-.211-.356A9.75 9.75 0 1112 21.75z"/></svg>' },
+    { key:'instagram', cls:'instagram-btn', label:'Instagram', icon:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>' },
+    { key:'facebook',  cls:'facebook-btn',  label:'Facebook', icon:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M24 12.073C24 5.404 18.627 0 12 0S0 5.404 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.97h-1.513c-1.491 0-1.956.93-1.956 1.886v2.267h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg>' }
+  ];
+  defs.forEach(d => {
+    if (social[d.key]) {
+      const a = document.createElement('a');
+      a.href = social[d.key]; a.target = '_blank'; a.rel = 'noopener noreferrer';
+      a.className = `social-btn ${d.cls}`;
+      a.innerHTML = d.icon + ' ' + d.label;
+      sb.appendChild(a);
+    }
+  });
+
+  // Select ore dinamici
+  const numOre = cfg.num_ore || 6;
+  ['hourSelectTeacher','hourSelect'].forEach(id => {
+    const sel = document.getElementById(id);
+    sel.innerHTML = '<option value="">Ora</option>';
+    for (let i = 1; i <= numOre; i++) {
+      sel.innerHTML += `<option value="${i}">${i}ª Ora</option>`;
+    }
+  });
+
+  // Banner nome app
+  const nomeA = cfg.nome_app || cfg.nome_scuola || "Orario";
+  document.getElementById('androidBannerTitle').textContent = `Installa ${nomeA}!`;
+  document.getElementById('iosBannerTitle').textContent = `Installa ${nomeA} sul tuo iPhone!`;
+}
+
+// ═══════════════════════════════════════════════
+//  CARICA DATI
+// ═══════════════════════════════════════════════
+async function loadData() {
+  try {
+    const ts = Date.now();
+    const promises = [
+      fetch(`./doc_dict.json?t=${ts}`),
+      fetch(`./class_dict.json?t=${ts}`),
+      fetch(`./aule_dict.json?t=${ts}`)
+    ];
+    if (cfg.comunicazioni) promises.push(fetch(`./comunicazioni.json?t=${ts}`));
+
+    const resps = await Promise.all(promises);
+    teachersData = await resps[0].json();
+    classesData  = await resps[1].json();
+    roomsData    = await resps[2].json();
+    if (cfg.comunicazioni && resps[3]) comunicazioniData = await resps[3].json();
+
+    updateSuggestions();
+    renderComunicazioni();
+
+    // Ripristina ultima ricerca
+    try {
+      const last = JSON.parse(localStorage.getItem("lastSearch"));
+      if (last?.key && last?.mode) {
+        document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+        const btn = document.querySelector(`.mode-btn[data-mode="${last.mode}"]`);
+        if (btn) { btn.classList.add('active'); currentMode = last.mode; }
+        updateSuggestions();
+        document.getElementById('searchInput').value = last.key;
+        searchSchedule(last.key);
+      }
+    } catch(e) {}
+
+  } catch(err) {
+    console.error("Errore caricamento dati:", err);
+  }
+}
+
+// ═══════════════════════════════════════════════
+//  SLOT / CAMPANE (dalla config)
+// ═══════════════════════════════════════════════
+function getCurrentSlotInfo() {
+  const campane = cfg.campane || [];
+  if (!campane.length) throw new Error("Campane non configurate.");
+  const d = new Date();
+  const dow = d.getDay();
+  if (dow === 0 || dow === 6) throw new Error("Oggi è weekend.");
+  const minutes = d.getHours() * 60 + d.getMinutes();
+  for (let i = 0; i < campane.length; i++) {
+    const { inizio_min, fine_min, label } = campane[i];
+    if (minutes >= inizio_min && minutes < fine_min) {
+      return { index: (dow - 1) * campane.length + i + 1, day: dow, hour: i + 1, label };
+    }
+  }
+  throw new Error("Fuori orario scolastico.");
+}
+
+function getSlotIndex0(day, hour) {
+  // day: 1..5, hour: 1..numOre → indice 0-based
+  return (day - 1) * (cfg.num_ore || 6) + (hour - 1);
+}
+
+// ═══════════════════════════════════════════════
+//  SUGGESTIONS / SEARCH
+// ═══════════════════════════════════════════════
+function updateSuggestions() {
+  const data = currentMode === 'teacher' ? teachersData : currentMode === 'class' ? classesData : roomsData;
+  const list = document.getElementById('suggestionsList');
+  list.innerHTML = '';
+  Object.keys(data).sort((a,b) => a.localeCompare(b)).forEach(k => {
+    const li = document.createElement('li');
+    li.textContent = k;
+    li.addEventListener('click', () => {
+      document.getElementById('searchInput').value = k;
+      list.style.display = 'none';
+      searchSchedule(k);
+    });
+    list.appendChild(li);
+  });
+}
+
+function searchSchedule(name) {
+  document.getElementById('freeRoomsResult').innerHTML = '';
+  const data = currentMode === 'teacher' ? teachersData : currentMode === 'class' ? classesData : roomsData;
+  const key = Object.keys(data).find(k => k.toLowerCase().includes(name.toLowerCase()));
+  const result = key ? data[key] : null;
+  const container = document.getElementById('scheduleContainer');
+  const infoBox = document.getElementById('infoBox');
+  const content = document.getElementById('scheduleContent');
+
+  if (!result) {
+    infoBox.innerHTML = `<h2>Nessun risultato trovato</h2>`;
+    content.innerHTML = ''; container.style.display = 'block'; return;
+  }
+
+  localStorage.setItem('lastSearch', JSON.stringify({ mode: currentMode, key }));
+  const labels = { teacher:'Orario del docente', class:'Orario della classe', room:"Orario dell'aula" };
+  infoBox.innerHTML = `<h2>${key}</h2><p>${labels[currentMode]}</p>`;
+
+  const giorni = ['Lunedì','Martedì','Mercoledì','Giovedì','Venerdì'];
+  const campane = cfg.campane || [];
+  const numOre = cfg.num_ore || 6;
+
+  let html = `<table class="schedule-table"><thead><tr><th>Ora</th>`;
+  giorni.forEach(g => html += `<th>${g}</th>`);
+  html += `</tr></thead><tbody>`;
+
+  for (let ora = 0; ora < numOre; ora++) {
+    const campLabel = campane[ora] ? `<br><span style="font-size:12px;color:#aaa">${campane[ora].inizio}–${campane[ora].fine}</span>` : '';
+    html += `<tr><td><strong>${ora + 1}</strong>${campLabel}</td>`;
+    for (let g = 0; g < 5; g++) {
+      const idx = g * numOre + ora;
+      const cell = result[idx] || '';
+      const fmt = formatCell(cell, currentMode);
+
+      if (currentMode === 'class') {
+        const absInfo = getClassAbsenceInfo(key, ora, g);
+        const subInfo = getClassSubstituteInfo(key, ora, g);
+        if (absInfo) {
+          const lbl = absInfo.tipo === 'ingresso' ? `🔴 entra ${absInfo.orario}` : `🔴 esce ${absInfo.orario}`;
+          const extra = subInfo ? `<div class="lesson-info" style="margin-top:4px"><span class="teacher">🔄 ${subInfo.docente||'sostituto'}</span><span class="room">aula ${subInfo.aula||'—'}</span></div>` : '';
+          html += `<td class="no-school-cell"><span class="no-school-badge">${lbl}</span>${extra}</td>`;
+        } else if (subInfo) {
+          const extra = `<div class="lesson-info" style="margin-top:4px"><span class="teacher">🔄 ${subInfo.docente||'sostituto'}</span><span class="room">aula ${subInfo.aula||'—'}</span></div>`;
+          html += `<td class="modified-cell"><span class="modified-badge">⚠️ modifica</span>${extra}</td>`;
+        } else html += `<td>${fmt}</td>`;
+
+      } else if (currentMode === 'teacher') {
+        const absent = isAbsent(key, ora, g);
+        const subInfo = getSubstituteInfo(key, ora, g);
+        const roomChange = getTeacherRoomChange(key, ora, g);
+        if (absent) {
+          html += `<td class="absent-cell"><span class="absent-badge">🔴 assente</span>${fmt}</td>`;
+        } else if (subInfo) {
+          const extra = `<div class="lesson-info" style="margin-top:4px"><span class="subject">${subInfo.classe}</span><span class="room">aula ${subInfo.aula}</span></div>`;
+          html += `<td class="substitute-cell"><span class="substitute-badge">🟠 sostituzione</span>${extra}</td>`;
+        } else if (roomChange) {
+          const extra = `<div class="lesson-info" style="margin-top:4px"><span class="room">🏫 aula ${roomChange.aula||'—'}</span></div>`;
+          html += `<td class="modified-cell"><span class="modified-badge">⚠️ cambio aula</span>${extra}</td>`;
+        } else html += `<td>${fmt}</td>`;
+
+      } else if (currentMode === 'room') {
+        const rs = getRoomSubstituteInfo(key, ora, g);
+        if (rs) {
+          const extra = `<div class="lesson-info" style="margin-top:4px"><span class="subject">${rs.classe||'—'}</span><span class="teacher">🔄 ${rs.docente||'sostituto'}</span></div>`;
+          html += `<td class="modified-cell"><span class="modified-badge">⚠️ cambio</span>${extra}</td>`;
+        } else html += `<td>${fmt}</td>`;
+      } else html += `<td>${fmt}</td>`;
+    }
+    html += `</tr>`;
+  }
+  html += `</tbody></table>`;
+  content.innerHTML = html;
+  container.style.display = 'block';
+}
+
+function formatCell(cellText, mode) {
+  if (!cellText || !cellText.trim()) return '';
+  cellText = cellText.replace(/\\n/g,' ');
+  if (cellText.toLowerCase().includes('disp')) return `<div class="lesson-info"><span style="color:#999;font-style:italic">${cellText}</span></div>`;
+  if (mode === 'class' || mode === 'room') {
+    const m = cellText.match(/^(.+?)\s*\(([^)]+)\)\s*\(([^)]+)\)\s*$/);
+    if (m) return `<div class="lesson-info"><span class="subject">${m[1].trim()}</span><span class="teacher">${m[2].trim()}</span><span class="room">${m[3].trim()}</span></div>`;
+  } else if (mode === 'teacher') {
+    const m = cellText.match(/^(.+?)\s*\(([^)]+)\)\s*$/);
+    if (m) return `<div class="lesson-info"><span class="subject">${m[1].trim()}</span><span class="room">${m[2].trim()}</span></div>`;
+  }
+  return `<div class="lesson-info"><span class="subject">${cellText.trim()}</span></div>`;
+}
+
+// ═══════════════════════════════════════════════
+//  COMUNICAZIONI HELPERS
+// ═══════════════════════════════════════════════
+function giornoRef() {
+  return (comunicazioniData.giorno_settimana >= 0) ? comunicazioniData.giorno_settimana : new Date().getDay() - 1;
+}
+function oraMatch(oraStr, ora) {
+  const s = String(oraStr);
+  if (s.includes('-') || s.includes('/')) return s.split(/[-\/]/).map(p=>parseInt(p)).includes(ora);
+  return s === String(ora);
+}
+
+function isAbsent(docente, oraIdx, giorno) {
+  if (!comunicazioniData?.sostituzioni || giorno !== giornoRef()) return false;
+  const ora = oraIdx + 1; const cognome = docente.toUpperCase();
+  const isSub = comunicazioniData.sostituzioni.some(s => oraMatch(s.ora,ora) && s.docente?.toUpperCase().includes(cognome));
+  if (isSub) return false;
+  return comunicazioniData.sostituzioni.some(s => {
+    if (!oraMatch(s.ora,ora)) return false;
+    const ts = teachersData[Object.keys(teachersData).find(k=>k.toUpperCase()===cognome)];
+    if (!ts) return false;
+    const cell = ts[giorno*(cfg.num_ore||6)+oraIdx]||'';
+    return cell && s.classe && cell.toUpperCase().includes(s.classe.toUpperCase());
+  });
+}
+function getSubstituteInfo(docente, oraIdx, giorno) {
+  if (!comunicazioniData?.sostituzioni || giorno !== giornoRef()) return null;
+  const ora = oraIdx+1; const cognome = docente.toUpperCase();
+  return comunicazioniData.sostituzioni.find(s => s.docente?.toUpperCase().includes(cognome) && oraMatch(s.ora,ora)) || null;
+}
+function getTeacherRoomChange(docente, oraIdx, giorno) {
+  if (!comunicazioniData?.cambi_aula || giorno !== giornoRef()) return null;
+  const ora = oraIdx+1; const cognome = docente.toUpperCase();
+  const ts = teachersData[Object.keys(teachersData).find(k=>k.toUpperCase()===cognome)];
+  if (!ts) return null;
+  const cell = ts[giorno*(cfg.num_ore||6)+oraIdx]||''; if (!cell) return null;
+  const classe = cell.split('(')[0].trim().toUpperCase();
+  return comunicazioniData.cambi_aula.find(s => s.classe && oraMatch(s.ora,ora) && s.classe.toUpperCase().includes(classe)) || null;
+}
+function getClassAbsenceInfo(classe, oraIdx, giorno) {
+  if (!comunicazioniData?.ingressi_uscite || giorno !== giornoRef()) return null;
+  const map = cfg.ingressi_uscite_map || {};
+  const matches = comunicazioniData.ingressi_uscite.filter(r => r.classe?.toUpperCase().includes(classe.toUpperCase()));
+  for (const m of matches) {
+    if (m.uscita && m.uscita !== '—') { const idx=map[m.uscita.trim()]; if (idx!==undefined && oraIdx>=idx) return {tipo:'uscita',orario:m.uscita}; }
+    if (m.ingresso && m.ingresso !== '—') { const idx=map[m.ingresso.trim()]; if (idx!==undefined && oraIdx<idx) return {tipo:'ingresso',orario:m.ingresso}; }
+  }
+  return null;
+}
+function getClassSubstituteInfo(classe, oraIdx, giorno) {
+  if (!comunicazioniData || giorno !== giornoRef()) return null;
+  const ora = oraIdx+1;
+  if (comunicazioniData.sostituzioni) { const m=comunicazioniData.sostituzioni.find(s=>s.classe?.toUpperCase().includes(classe.toUpperCase())&&oraMatch(s.ora,ora)); if(m) return m; }
+  if (comunicazioniData.cambi_aula) { const m=comunicazioniData.cambi_aula.find(s=>s.classe?.toUpperCase().includes(classe.toUpperCase())&&oraMatch(s.ora,ora)); if(m) return {...m,docente:m.docente||'—'}; }
+  return null;
+}
+function getRoomSubstituteInfo(aula, oraIdx, giorno) {
+  if (!comunicazioniData || giorno !== giornoRef()) return null;
+  const ora = oraIdx+1; const a = aula.toUpperCase();
+  if (comunicazioniData.cambi_aula) { const m=comunicazioniData.cambi_aula.find(s=>s.aula?.toUpperCase().includes(a)&&oraMatch(s.ora,ora)); if(m) return m; }
+  if (comunicazioniData.sostituzioni) { const m=comunicazioniData.sostituzioni.find(s=>s.aula?.toUpperCase().includes(a)&&oraMatch(s.ora,ora)); if(m) return m; }
+  return null;
+}
+
+function renderComunicazioni() {
+  const com = comunicazioniData;
+  const section = document.getElementById('comunicazioniSection');
+  const hasData = (com.ingressi_uscite?.some(r=>r.classe)) || (com.sostituzioni?.some(r=>r.classe)) || (com.cambi_aula?.some(r=>r.classe||r.ora));
+  if (!hasData) { section.style.display='none'; return; }
+  section.style.display = 'block';
+  document.getElementById('comData').textContent = com.data || '';
+  const inRows=(com.ingressi_uscite||[]).filter(r=>r.classe);
+  document.getElementById('comIngressiTable').style.display = inRows.length?'':'none';
+  document.getElementById('comIngressiBody').innerHTML = inRows.map(r=>`<tr><td><strong>${r.classe}</strong></td><td>${r.ingresso||'—'}</td><td>${r.uscita||'—'}</td><td>${r.sostituzione||'—'}</td><td>${r.aula||'—'}</td></tr>`).join('');
+  const soRows=(com.sostituzioni||[]).filter(r=>r.classe);
+  document.getElementById('comSostituzioniTable').style.display = soRows.length?'':'none';
+  document.getElementById('comSostituzioniBody').innerHTML = soRows.map(r=>`<tr><td><strong>${r.classe}</strong></td><td>${r.ora||'—'}</td><td>${r.aula||'—'}</td><td>${r.docente||'—'}</td></tr>`).join('');
+  const caRows=(com.cambi_aula||[]).filter(r=>r.classe||r.ora);
+  document.getElementById('comCambiTable').style.display = caRows.length?'':'none';
+  document.getElementById('comCambiBody').innerHTML = caRows.map(r=>`<tr><td>${r.ora||'—'}</td><td><strong>${r.classe}</strong></td><td>${r.aula||'—'}</td><td>${r.docente||'—'}</td></tr>`).join('');
+}
+
+// ═══════════════════════════════════════════════
+//  TROVA DOCENTE / AULA
+// ═══════════════════════════════════════════════
+function findAvailableTeachers(idx) {
+  return Object.entries(teachersData)
+    .filter(([,s]) => s[idx]?.trim().toLowerCase().includes('disp'))
+    .map(([n]) => n).sort();
+}
+function filterAlreadySubstituting(teachers, oraNum) {
+  if (!comunicazioniData?.sostituzioni) return teachers;
+  const busy = comunicazioniData.sostituzioni.filter(s=>String(s.ora)===String(oraNum)&&s.docente).map(s=>s.docente.toUpperCase());
+  return teachers.filter(t => !busy.some(b => b.includes(t.toUpperCase()) || t.toUpperCase().includes(b)));
+}
+function findFreeRooms(idx) {
+  return Object.entries(roomsData)
+    .filter(([,s]) => { const c=s[idx]; return !c||c.trim()===''||c.toLowerCase().includes('disp'); })
+    .map(([n]) => n).sort();
+}
+function showTeacherResult(box, teachers, label) {
+  box.innerHTML = teachers.length
+    ? `<div class="info-box" style="background:linear-gradient(135deg,#4CAF50,#81C784)"><h3>Docenti disponibili${label?' — '+label:''}:</h3><p><strong>${teachers.join(', ')}</strong></p></div>`
+    : `<div class="info-box" style="background:linear-gradient(135deg,#FF6B9D,#FFA07A)"><strong>Nessun docente disponibile.</strong></div>`;
+}
+function showRoomResult(box, rooms, label) {
+  box.innerHTML = rooms.length
+    ? `<div class="info-box" style="background:linear-gradient(135deg,#4CAF50,#81C784)"><h3>Aule libere${label?' — '+label:''}:</h3><p><strong>${rooms.join(', ')}</strong></p></div>`
+    : `<div class="info-box" style="background:linear-gradient(135deg,#FF6B9D,#FFA07A)"><strong>Nessuna aula libera.</strong></div>`;
+}
+
+// ═══════════════════════════════════════════════
+//  SETUP UI & LISTENERS
+// ═══════════════════════════════════════════════
+function setupUI() {
+  const input = document.getElementById('searchInput');
+  const list  = document.getElementById('suggestionsList');
+
+  // Ricerca
+  document.getElementById('searchBtn').addEventListener('click', () => {
+    const v = input.value.trim(); if (v) searchSchedule(v);
+  });
+  input.addEventListener('keypress', e => { if(e.key==='Enter'){e.preventDefault();const v=e.target.value.trim();if(v)searchSchedule(v);} });
+  input.addEventListener('input', () => {
+    const val = input.value.toLowerCase();
+    let cnt = 0;
+    list.querySelectorAll('li').forEach(li => { const show=li.textContent.toLowerCase().includes(val); li.style.display=show?'block':'none'; if(show)cnt++; });
+    list.style.display = cnt > 0 ? 'block' : 'none';
+  });
+  document.addEventListener('click', e => { if(!e.target.closest('#searchInput')&&!e.target.closest('#suggestionsList')) list.style.display='none'; });
+
+  // Mode buttons
+  document.querySelectorAll('.mode-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active'); currentMode = btn.dataset.mode;
+      input.value = ''; list.style.display='none'; list.innerHTML='';
+      document.getElementById('scheduleContainer').style.display='none';
+      document.getElementById('scheduleContent').innerHTML='';
+      input.placeholder = currentMode==='teacher'?'Inserisci il cognome del docente...':currentMode==='class'?'Inserisci la classe (es. 3A)...':'Inserisci il nome dell\'aula...';
+      updateSuggestions();
+      document.getElementById('findAvailTeacherSection').style.display = currentMode==='teacher'?'block':'none';
+      document.getElementById('findFreeRoomSection').style.display = currentMode==='room'?'block':'none';
+    });
+  });
+  // Inizializza visibilità sezioni
+  document.getElementById('findAvailTeacherSection').style.display = 'block';
+
+  // Trova docente
+  document.getElementById('searchAvailTeacherBtn').addEventListener('click', e => {
+    e.preventDefault();
+    const day=parseInt(document.getElementById('daySelectTeacher').value);
+    const hour=parseInt(document.getElementById('hourSelectTeacher').value);
+    if(!day||!hour){alert('Seleziona giorno e ora!');return;}
+    let t=findAvailableTeachers(getSlotIndex0(day,hour));
+    t=filterAlreadySubstituting(t,hour);
+    showTeacherResult(document.getElementById('availTeacherResult'),t,'');
+  });
+  document.getElementById('findAvailTeacherNowBtn').addEventListener('click', e => {
+    e.preventDefault();
+    try {
+      const slot=getCurrentSlotInfo();
+      let t=findAvailableTeachers(getSlotIndex0(slot.day,slot.hour));
+      t=filterAlreadySubstituting(t,slot.hour);
+      showTeacherResult(document.getElementById('availTeacherResult'),t,slot.label);
+    } catch(err){alert(err.message);}
+  });
+
+  // Trova aula
+  document.getElementById('searchFreeRoomBtn').addEventListener('click', e => {
+    e.preventDefault();
+    const day=parseInt(document.getElementById('daySelect').value);
+    const hour=parseInt(document.getElementById('hourSelect').value);
+    if(!day||!hour){alert('Seleziona giorno e ora!');return;}
+    showRoomResult(document.getElementById('freeRoomsResult'),findFreeRooms(getSlotIndex0(day,hour)),'');
+  });
+  document.getElementById('findNowBtn').addEventListener('click', e => {
+    e.preventDefault();
+    try { const slot=getCurrentSlotInfo(); showRoomResult(document.getElementById('freeRoomsResult'),findFreeRooms(getSlotIndex0(slot.day,slot.hour)),slot.label); }
+    catch(err){alert(err.message);}
+  });
+
+  // PWA Install
+  let deferredPrompt = null;
+  const installBtn = document.getElementById('installBtn');
+  const androidBanner = document.getElementById('androidBanner');
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault(); deferredPrompt=e;
+    if(window.matchMedia('(display-mode:standalone)').matches) return;
+    installBtn.style.display='inline-block';
+    if(!localStorage.getItem('bannerDismissed')) setTimeout(()=>androidBanner.classList.add('visible'),2000);
+  });
+  async function triggerInstall() {
+    if(!deferredPrompt) return;
+    androidBanner.classList.remove('visible'); deferredPrompt.prompt();
+    await deferredPrompt.userChoice; deferredPrompt=null; installBtn.style.display='none';
+  }
+  document.getElementById('androidBannerInstall').addEventListener('click',triggerInstall);
+  installBtn.addEventListener('click',triggerInstall);
+  document.getElementById('androidBannerClose').addEventListener('click',()=>{androidBanner.classList.remove('visible');localStorage.setItem('bannerDismissed','1');});
+  document.getElementById('androidBannerDismiss').addEventListener('click',()=>{androidBanner.classList.remove('visible');localStorage.setItem('bannerDismissed','1');});
+  window.addEventListener('appinstalled',()=>{installBtn.style.display='none';androidBanner.classList.remove('visible');deferredPrompt=null;});
+
+  // iOS banner
+  const isIos=/iphone|ipad|ipod/i.test(navigator.userAgent);
+  if(isIos&&!navigator.standalone&&!localStorage.getItem('iosBannerDismissed')) {
+    setTimeout(()=>document.getElementById('iosBanner').classList.add('visible'),2000);
+    document.getElementById('iosBannerClose').addEventListener('click',()=>{document.getElementById('iosBanner').classList.remove('visible');localStorage.setItem('iosBannerDismissed','1');});
+  }
+
+  // Service Worker
+  if('serviceWorker' in navigator) {
+    window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+  }
+}
+
+// ── AVVIO ──
+bootstrap();
+</script>
+</body>
+</html>

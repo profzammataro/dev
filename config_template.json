@@ -1,0 +1,30 @@
+{
+  "nome_scuola": "Liceo Scientifico XYZ",
+  "nome_app": "Orario XYZ",
+  "sottotitolo": "Orario Scolastico 2024/25",
+  "colore_primario": "#2196F3",
+  "colore_secondario": "#21CBF3",
+  "logo": "logo.png",
+  "num_ore": 6,
+  "modello": "tradizionale",
+  "campane": [
+    { "label": "1ª ora", "inizio": "8:00", "fine": "9:00", "inizio_min": 480, "fine_min": 540 },
+    { "label": "2ª ora", "inizio": "9:00", "fine": "10:00", "inizio_min": 540, "fine_min": 600 },
+    { "label": "3ª ora", "inizio": "10:00", "fine": "11:00", "inizio_min": 600, "fine_min": 660 },
+    { "label": "4ª ora", "inizio": "11:00", "fine": "12:00", "inizio_min": 660, "fine_min": 720 },
+    { "label": "5ª ora", "inizio": "12:00", "fine": "13:00", "inizio_min": 720, "fine_min": 780 },
+    { "label": "6ª ora", "inizio": "13:00", "fine": "14:00", "inizio_min": 780, "fine_min": 840 }
+  ],
+  "ingressi_uscite_map": {
+    "8:00": 0, "9:00": 1, "10:00": 2,
+    "11:00": 3, "12:00": 4, "13:00": 5
+  },
+  "social": {
+    "whatsapp": "",
+    "instagram": "",
+    "facebook": "",
+    "registro": "",
+    "displayer": ""
+  },
+  "comunicazioni": true
+}

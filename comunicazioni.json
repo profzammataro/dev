@@ -1,0 +1,228 @@
+{
+  "data": "17/04/2026",
+  "giorno_settimana": 4,
+  "ingressi_uscite": [
+    {
+      "classe": "4F",
+      "ingresso": "9..10",
+      "uscita": "",
+      "sostituzione": "",
+      "aula": ""
+    },
+    {
+      "classe": "5A",
+      "ingresso": "9.10",
+      "uscita": "",
+      "sostituzione": "",
+      "aula": ""
+    },
+    {
+      "classe": "1D",
+      "ingresso": "",
+      "uscita": "12.10",
+      "sostituzione": "",
+      "aula": ""
+    },
+    {
+      "classe": "1F",
+      "ingresso": "",
+      "uscita": "13.05",
+      "sostituzione": "ANT FREDDO IN 4h",
+      "aula": "108"
+    },
+    {
+      "classe": "5C",
+      "ingresso": "",
+      "uscita": "13.05",
+      "sostituzione": "GALATI anticipa in 2h",
+      "aula": "224"
+    },
+    {
+      "classe": "3F",
+      "ingresso": "9.10",
+      "uscita": "",
+      "sostituzione": "",
+      "aula": ""
+    },
+    {
+      "classe": "2D",
+      "ingresso": "",
+      "uscita": "11.00",
+      "sostituzione": "",
+      "aula": ""
+    },
+    {
+      "classe": "3D",
+      "ingresso": "",
+      "uscita": "13.05",
+      "sostituzione": "",
+      "aula": ""
+    }
+  ],
+  "sostituzioni": [
+    {
+      "classe": "3L",
+      "ora": "2",
+      "aula": "014",
+      "docente": "CASTRONUOVO (REC)"
+    },
+    {
+      "classe": "1L",
+      "ora": "3",
+      "aula": "014",
+      "docente": "TOMMASINO (REC)"
+    },
+    {
+      "classe": "5L",
+      "ora": "4",
+      "aula": "014",
+      "docente": "LOBARDI (REC)"
+    },
+    {
+      "classe": "5D",
+      "ora": "1",
+      "aula": "206",
+      "docente": "TASSETTI"
+    },
+    {
+      "classe": "5C",
+      "ora": "2",
+      "aula": "224",
+      "docente": "GALATI"
+    },
+    {
+      "classe": "1C",
+      "ora": "3",
+      "aula": "224",
+      "docente": "PALUMBO (REC)"
+    },
+    {
+      "classe": "2N",
+      "ora": "2",
+      "aula": "101",
+      "docente": "DE CARLI"
+    },
+    {
+      "classe": "2N",
+      "ora": "3",
+      "aula": "101",
+      "docente": "RIZZO"
+    },
+    {
+      "classe": "4E",
+      "ora": "6",
+      "aula": "102",
+      "docente": "RIZZO"
+    },
+    {
+      "classe": "5A",
+      "ora": "3",
+      "aula": "104",
+      "docente": "GEROMINO"
+    },
+    {
+      "classe": "3D",
+      "ora": "3",
+      "aula": "226",
+      "docente": "FATTORUSO"
+    },
+    {
+      "classe": "3D",
+      "ora": "4",
+      "aula": "226",
+      "docente": "PELUSO (REC)"
+    },
+    {
+      "classe": "4D",
+      "ora": "5",
+      "aula": "226",
+      "docente": "FORCELLINO"
+    },
+    {
+      "classe": "5M",
+      "ora": "6",
+      "aula": "222",
+      "docente": "LOMBARDI"
+    },
+    {
+      "classe": "4F",
+      "ora": "3",
+      "aula": "207",
+      "docente": "MEDDA (REC)"
+    },
+    {
+      "classe": "5F",
+      "ora": "5",
+      "aula": "206",
+      "docente": "ZAMMATARO (REC)"
+    },
+    {
+      "classe": "3D",
+      "ora": "5",
+      "aula": "117",
+      "docente": "GALATI"
+    },
+    {
+      "classe": "1F",
+      "ora": "3",
+      "aula": "FIS",
+      "docente": "GAGLIARDI"
+    },
+    {
+      "classe": "2F",
+      "ora": "4",
+      "aula": "106",
+      "docente": "GAGLIARDI"
+    },
+    {
+      "classe": "4F",
+      "ora": "5",
+      "aula": "106",
+      "docente": "MOSCARELLI"
+    },
+    {
+      "classe": "3D",
+      "ora": "1",
+      "aula": "113",
+      "docente": "FATTORUSO"
+    },
+    {
+      "classe": "4D",
+      "ora": "2/3",
+      "aula": "",
+      "docente": "FRANCESCHELLI"
+    },
+    {
+      "classe": "1D",
+      "ora": "4",
+      "aula": "108",
+      "docente": "TORELLI"
+    }
+  ],
+  "cambi_aula": [
+    {
+      "ora": "2-3",
+      "classe": "3E + 4D",
+      "aula": "A M",
+      "docente": ""
+    },
+    {
+      "ora": "2",
+      "classe": "2F",
+      "aula": "130",
+      "docente": ""
+    },
+    {
+      "ora": "3",
+      "classe": "2A",
+      "aula": "215",
+      "docente": ""
+    },
+    {
+      "ora": "4",
+      "classe": "1D",
+      "aula": "129",
+      "docente": ""
+    }
+  ]
+}
